@@ -44,6 +44,247 @@
             white-space: normal;
             word-break: break-word;
         }
+
+        /* ========== 이메일 발송 스타일 ========== */
+        .email-recipients-card {
+            min-width: 340px;
+        }
+
+        .email-filter-modes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-filter-radio {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .email-filter-radio:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        .email-filter-radio input[type="radio"] {
+            accent-color: var(--accent-cyan);
+        }
+
+        .email-filter-radio:has(input:checked) {
+            border-color: var(--accent-cyan);
+            background: var(--glow-cyan);
+            color: var(--text-primary);
+        }
+
+        .email-filter-panel {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .email-filter-panel label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .email-filter-panel select {
+            width: 100%;
+            margin-top: 0.35rem;
+        }
+
+        .email-checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .email-checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .email-checkbox-grid label:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .email-checkbox-grid input[type="checkbox"] {
+            accent-color: var(--accent-cyan);
+        }
+
+        .email-recipients-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .email-select-all {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .email-select-all input[type="checkbox"] {
+            accent-color: var(--accent-cyan);
+        }
+
+        .email-count-badge {
+            font-size: 0.82rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            background: var(--glow-cyan);
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .email-member-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .email-member-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .email-member-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .email-member-item input[type="checkbox"] {
+            accent-color: var(--accent-cyan);
+            flex-shrink: 0;
+        }
+
+        .email-member-name {
+            color: var(--text-primary);
+            min-width: 60px;
+        }
+
+        .email-member-email {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .email-member-no-email {
+            color: var(--accent-pink);
+            font-size: 0.78rem;
+            font-style: italic;
+        }
+
+        /* 이메일 본문 textarea */
+        #email-body {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* 미리보기 */
+        .email-preview-box {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .email-preview-subject {
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .email-preview-body {
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            background: rgba(255, 255, 255, 0.03);
+            min-height: 100px;
+        }
+
+        .email-preview-body a {
+            color: var(--accent-cyan);
+        }
+
+        /* 발송 결과 */
+        .email-result-summary {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-result-stat {
+            text-align: center;
+        }
+
+        .email-result-stat .stat-num {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .email-result-stat .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .stat-success { color: var(--accent-green); }
+        .stat-fail { color: var(--accent-pink); }
+
+        /* 발송 진행 바 */
+        .email-progress {
+            margin-top: 0.75rem;
+        }
+
+        .email-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .email-progress-fill {
+            height: 100%;
+            background: var(--accent-cyan);
+            border-radius: 3px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .email-progress-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +340,7 @@
                 <button class="admin-tab" data-tab="events">모임 관리</button>
                 <button class="admin-tab" data-tab="locations">장소 관리</button>
                 <button class="admin-tab" data-tab="inquiries">문의 관리</button>
+                <button class="admin-tab" data-tab="email">이메일 발송</button>
             </div>
 
             <!-- 멤버 관리 -->
@@ -339,6 +581,113 @@
                         </table>
                     </div>
                 </div>
+            </div>
+
+            <!-- 이메일 발송 -->
+            <div id="panel-email" class="admin-panel">
+                <div class="admin-horizontal">
+                    <!-- 수신자 선택 -->
+                    <div class="admin-card email-recipients-card">
+                        <h3>수신자 선택</h3>
+
+                        <!-- 필터 모드 선택 -->
+                        <div class="email-filter-modes">
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="all" checked>
+                                <span>전체 멤버</span>
+                            </label>
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="event">
+                                <span>모임 참여자별</span>
+                            </label>
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="interest">
+                                <span>관심분야별</span>
+                            </label>
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="type">
+                                <span>멤버 유형별</span>
+                            </label>
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="manual">
+                                <span>직접 선택</span>
+                            </label>
+                        </div>
+
+                        <!-- 모임 참여자별 필터 -->
+                        <div id="email-filter-event" class="email-filter-panel" style="display:none;">
+                            <label for="email-event-select">모임 선택:</label>
+                            <select id="email-event-select" class="admin-search">
+                                <option value="">-- 모임을 선택하세요 --</option>
+                            </select>
+                        </div>
+
+                        <!-- 관심분야별 필터 -->
+                        <div id="email-filter-interest" class="email-filter-panel" style="display:none;">
+                            <p style="margin-bottom:0.5rem; font-size:0.85rem; color:var(--text-muted);">관심분야를 선택하세요 (복수 선택 가능):</p>
+                            <div id="email-interest-options" class="email-checkbox-grid"></div>
+                        </div>
+
+                        <!-- 멤버 유형별 필터 -->
+                        <div id="email-filter-type" class="email-filter-panel" style="display:none;">
+                            <label for="email-type-select">멤버 유형 선택:</label>
+                            <select id="email-type-select" class="admin-search">
+                                <option value="">-- 유형을 선택하세요 --</option>
+                            </select>
+                        </div>
+
+                        <!-- 수신자 리스트 -->
+                        <div class="email-recipients-list">
+                            <div class="email-recipients-header">
+                                <label class="email-select-all">
+                                    <input type="checkbox" id="email-select-all-cb">
+                                    <span>전체 선택</span>
+                                </label>
+                                <span id="email-recipient-count" class="email-count-badge">0명 선택</span>
+                            </div>
+                            <div id="email-recipients-tbody" class="email-member-list">
+                                <p class="admin-loading">멤버 목록 로딩 중...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 이메일 작성 + 발송 -->
+                    <div>
+                        <div class="admin-card">
+                            <h3>이메일 작성</h3>
+                            <form id="email-form" class="site-form" onsubmit="return false;">
+                                <div class="form-group">
+                                    <label for="email-subject">제목 <span class="required">*</span></label>
+                                    <input type="text" id="email-subject" required placeholder="이메일 제목을 입력하세요">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email-body">본문 <span class="required">*</span></label>
+                                    <textarea id="email-body" rows="12" required placeholder="이메일 본문을 입력하세요.&#10;&#10;HTML 태그를 사용할 수 있습니다:&#10;&lt;b&gt;굵게&lt;/b&gt;, &lt;br&gt;줄바꿈, &lt;a href='URL'&gt;링크&lt;/a&gt;"></textarea>
+                                </div>
+                                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                    <button type="button" class="btn-secondary btn-small" onclick="previewEmail()">미리보기</button>
+                                    <button type="button" class="btn-primary form-submit" id="email-send-btn" onclick="sendBulkEmail()">이메일 발송 →</button>
+                                </div>
+                                <div class="form-status" id="email-form-status"></div>
+                            </form>
+                        </div>
+
+                        <!-- 미리보기 -->
+                        <div class="admin-card" id="email-preview-card" style="display:none;">
+                            <h3>미리보기</h3>
+                            <div class="email-preview-box">
+                                <div class="email-preview-subject" id="email-preview-subject"></div>
+                                <div class="email-preview-body" id="email-preview-body"></div>
+                            </div>
+                        </div>
+
+                        <!-- 발송 결과 -->
+                        <div class="admin-card" id="email-result-card" style="display:none;">
+                            <h3>발송 결과</h3>
+                            <div id="email-result-content"></div>
+                        </div>
+                    </div>
+                </div><!-- /admin-horizontal -->
             </div>
         </div>
     </div>

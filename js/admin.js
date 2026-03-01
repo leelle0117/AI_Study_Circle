@@ -36,6 +36,7 @@ async function initAdmin() {
         loadEvents();
         loadLocations();
         loadInquiries();
+        loadEmailTab();
     } catch (e) {
         showDenied();
     }
@@ -616,6 +617,345 @@ function exportMembersCsv() {
     a.download = `AI_Study_110_멤버목록_${today}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// ========== Email Bulk Send ==========
+let emailMembers = [];       // 이메일 탭에서 사용할 멤버 목록
+let emailEvents = [];        // 이메일 탭에서 사용할 이벤트 목록
+let emailFilterMode = 'all'; // 현재 필터 모드
+
+async function loadEmailTab() {
+    // 멤버 목록 로드 (이미 로드되었으면 재사용)
+    if (allMembers.length === 0) {
+        try { allMembers = await DB.getAllProfiles(); } catch (e) { /* ignore */ }
+    }
+    emailMembers = allMembers;
+
+    // 이벤트 목록 로드
+    if (allEvents.length === 0) {
+        try { allEvents = await DB.getAllEvents(); } catch (e) { /* ignore */ }
+    }
+    emailEvents = allEvents;
+
+    // 이벤트 드롭다운 채우기
+    const eventSelect = document.getElementById('email-event-select');
+    eventSelect.innerHTML = '<option value="">-- 모임을 선택하세요 --</option>' +
+        emailEvents.map(ev => {
+            const date = ev.event_date || '';
+            return `<option value="${ev.id}">${escapeHtml(ev.title)} (${date})</option>`;
+        }).join('');
+
+    // 관심분야 옵션 수집 및 렌더링
+    const allInterests = new Set();
+    emailMembers.forEach(m => {
+        (m.interests || []).forEach(i => { if (i) allInterests.add(i); });
+    });
+    const interestBox = document.getElementById('email-interest-options');
+    if (allInterests.size > 0) {
+        interestBox.innerHTML = Array.from(allInterests).sort().map(interest =>
+            `<label><input type="checkbox" value="${escapeHtml(interest)}" onchange="applyEmailFilter()"> ${escapeHtml(interest)}</label>`
+        ).join('');
+    } else {
+        interestBox.innerHTML = '<p style="color:var(--text-muted); font-size:0.82rem;">관심분야 데이터가 없습니다.</p>';
+    }
+
+    // 멤버 유형 옵션 수집 및 렌더링
+    const allTypes = new Set();
+    emailMembers.forEach(m => {
+        if (m.member_type) allTypes.add(m.member_type);
+    });
+    const typeSelect = document.getElementById('email-type-select');
+    typeSelect.innerHTML = '<option value="">-- 유형을 선택하세요 --</option>' +
+        Array.from(allTypes).sort().map(t =>
+            `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`
+        ).join('');
+
+    // 초기 멤버 리스트 렌더링
+    renderEmailRecipients(emailMembers);
+}
+
+// 필터 모드 변경
+document.querySelectorAll('input[name="email-filter"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        emailFilterMode = e.target.value;
+
+        // 모든 필터 패널 숨기기
+        document.getElementById('email-filter-event').style.display = 'none';
+        document.getElementById('email-filter-interest').style.display = 'none';
+        document.getElementById('email-filter-type').style.display = 'none';
+
+        // 선택된 필터 패널 표시
+        if (emailFilterMode === 'event') {
+            document.getElementById('email-filter-event').style.display = 'block';
+        } else if (emailFilterMode === 'interest') {
+            document.getElementById('email-filter-interest').style.display = 'block';
+        } else if (emailFilterMode === 'type') {
+            document.getElementById('email-filter-type').style.display = 'block';
+        }
+
+        applyEmailFilter();
+    });
+});
+
+// 이벤트 선택 변경
+document.getElementById('email-event-select').addEventListener('change', async function() {
+    const eventId = parseInt(this.value);
+    if (!eventId) {
+        renderEmailRecipients([]);
+        return;
+    }
+    try {
+        const attendees = await DB.getEventAttendees(eventId);
+        const members = attendees
+            .filter(a => a.profiles)
+            .map(a => a.profiles);
+        renderEmailRecipients(members);
+    } catch (e) {
+        renderEmailRecipients([]);
+    }
+});
+
+// 멤버 유형 선택 변경
+document.getElementById('email-type-select').addEventListener('change', function() {
+    applyEmailFilter();
+});
+
+function applyEmailFilter() {
+    let filtered = [];
+
+    if (emailFilterMode === 'all' || emailFilterMode === 'manual') {
+        filtered = emailMembers;
+    } else if (emailFilterMode === 'interest') {
+        const checkedInterests = Array.from(
+            document.querySelectorAll('#email-interest-options input:checked')
+        ).map(cb => cb.value);
+        if (checkedInterests.length === 0) {
+            filtered = emailMembers;
+        } else {
+            filtered = emailMembers.filter(m =>
+                (m.interests || []).some(i => checkedInterests.includes(i))
+            );
+        }
+    } else if (emailFilterMode === 'type') {
+        const selectedType = document.getElementById('email-type-select').value;
+        if (!selectedType) {
+            filtered = emailMembers;
+        } else {
+            filtered = emailMembers.filter(m => m.member_type === selectedType);
+        }
+    }
+    // event 모드는 별도 처리 (위의 email-event-select change 이벤트)
+
+    if (emailFilterMode !== 'event') {
+        renderEmailRecipients(filtered);
+    }
+}
+
+function renderEmailRecipients(members) {
+    const container = document.getElementById('email-recipients-tbody');
+    const selectAllCb = document.getElementById('email-select-all-cb');
+
+    if (members.length === 0) {
+        container.innerHTML = '<p style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">표시할 멤버가 없습니다.</p>';
+        selectAllCb.checked = false;
+        updateEmailRecipientCount();
+        return;
+    }
+
+    container.innerHTML = members.map(m => {
+        const email = m.email || '';
+        const hasEmail = !!email;
+        return `<div class="email-member-item">
+            <input type="checkbox" class="email-member-cb" value="${escapeHtml(email)}"
+                data-name="${escapeHtml(m.name || '')}"
+                ${hasEmail ? 'checked' : 'disabled'}>
+            <span class="email-member-name">${escapeHtml(m.name || '-')}</span>
+            ${hasEmail
+                ? `<span class="email-member-email">${escapeHtml(email)}</span>`
+                : `<span class="email-member-no-email">이메일 없음</span>`
+            }
+        </div>`;
+    }).join('');
+
+    // 체크박스 이벤트 바인딩
+    container.querySelectorAll('.email-member-cb').forEach(cb => {
+        cb.addEventListener('change', updateEmailRecipientCount);
+    });
+
+    // 전체 선택 상태 업데이트
+    const enabledCbs = container.querySelectorAll('.email-member-cb:not(:disabled)');
+    const checkedCbs = container.querySelectorAll('.email-member-cb:checked');
+    selectAllCb.checked = enabledCbs.length > 0 && enabledCbs.length === checkedCbs.length;
+
+    updateEmailRecipientCount();
+}
+
+// 전체 선택 체크박스
+document.getElementById('email-select-all-cb').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('#email-recipients-tbody .email-member-cb:not(:disabled)');
+    checkboxes.forEach(cb => { cb.checked = this.checked; });
+    updateEmailRecipientCount();
+});
+
+function updateEmailRecipientCount() {
+    const checked = document.querySelectorAll('#email-recipients-tbody .email-member-cb:checked');
+    document.getElementById('email-recipient-count').textContent = `${checked.length}명 선택`;
+}
+
+function getSelectedEmails() {
+    const checked = document.querySelectorAll('#email-recipients-tbody .email-member-cb:checked');
+    return Array.from(checked).map(cb => cb.value).filter(v => v);
+}
+
+function previewEmail() {
+    const subject = document.getElementById('email-subject').value.trim();
+    const body = document.getElementById('email-body').value.trim();
+
+    if (!subject && !body) {
+        alert('제목 또는 본문을 입력해주세요.');
+        return;
+    }
+
+    document.getElementById('email-preview-subject').textContent = subject || '(제목 없음)';
+
+    // 본문: 줄바꿈을 <br>로 변환 (HTML 태그가 아닌 순수 텍스트 부분만)
+    const previewBody = document.getElementById('email-preview-body');
+    // HTML 태그가 포함되어 있으면 그대로 렌더링, 아니면 줄바꿈 변환
+    if (/<[a-z][\s\S]*>/i.test(body)) {
+        previewBody.innerHTML = body;
+    } else {
+        previewBody.innerHTML = escapeHtml(body).replace(/\n/g, '<br>');
+    }
+
+    document.getElementById('email-preview-card').style.display = 'block';
+    document.getElementById('email-preview-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function sendBulkEmail() {
+    const emails = getSelectedEmails();
+    const subject = document.getElementById('email-subject').value.trim();
+    const body = document.getElementById('email-body').value.trim();
+    const statusEl = document.getElementById('email-form-status');
+    const btn = document.getElementById('email-send-btn');
+
+    // 유효성 검사
+    if (emails.length === 0) {
+        statusEl.textContent = '수신자를 선택해주세요.';
+        statusEl.className = 'form-status error';
+        return;
+    }
+    if (!subject) {
+        statusEl.textContent = '제목을 입력해주세요.';
+        statusEl.className = 'form-status error';
+        return;
+    }
+    if (!body) {
+        statusEl.textContent = '본문을 입력해주세요.';
+        statusEl.className = 'form-status error';
+        return;
+    }
+
+    // 확인 다이얼로그
+    if (!confirm(`${emails.length}명에게 이메일을 발송하시겠습니까?\n\n제목: ${subject}`)) {
+        return;
+    }
+
+    btn.disabled = true;
+    statusEl.textContent = '발송 중...';
+    statusEl.className = 'form-status loading';
+
+    // 본문 HTML 변환
+    let htmlBody;
+    if (/<[a-z][\s\S]*>/i.test(body)) {
+        htmlBody = body;
+    } else {
+        htmlBody = escapeHtml(body).replace(/\n/g, '<br>');
+    }
+
+    // HTML 이메일 템플릿 래핑
+    const fullHtml = `
+        <div style="max-width:600px; margin:0 auto; font-family:'Noto Sans KR', Arial, sans-serif; color:#333; line-height:1.7;">
+            <div style="background:#002451; padding:1.5rem; text-align:center;">
+                <span style="color:#00e5ff; font-weight:700; font-size:1.2rem;">AI</span>
+                <span style="color:#fff; font-weight:600; font-size:1.1rem;"> Study </span>
+                <span style="color:#00e5ff; font-weight:700; font-size:1.1rem;">110</span>
+            </div>
+            <div style="padding:2rem 1.5rem; background:#fff;">
+                ${htmlBody}
+            </div>
+            <div style="padding:1rem 1.5rem; background:#f5f5f5; text-align:center; font-size:0.8rem; color:#888;">
+                AI Study Circle 110 | <a href="https://study110.ai.kr" style="color:#002451;">study110.ai.kr</a>
+            </div>
+        </div>
+    `;
+
+    try {
+        // Supabase 세션에서 인증 토큰 가져오기
+        const session = await Auth.getSession();
+        if (!session) throw new Error('로그인이 필요합니다');
+
+        const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + session.access_token
+            },
+            body: JSON.stringify({
+                to: emails,
+                subject: subject,
+                html: fullHtml
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || '발송 실패');
+
+        // 결과 표시
+        const resultCard = document.getElementById('email-result-card');
+        const resultContent = document.getElementById('email-result-content');
+        resultCard.style.display = 'block';
+
+        if (data && data.success) {
+            statusEl.textContent = `발송 완료! (성공: ${data.sent}건, 실패: ${data.failed}건)`;
+            statusEl.className = 'form-status success';
+
+            resultContent.innerHTML = `
+                <div class="email-result-summary">
+                    <div class="email-result-stat">
+                        <div class="stat-num stat-success">${data.sent}</div>
+                        <div class="stat-label">성공</div>
+                    </div>
+                    <div class="email-result-stat">
+                        <div class="stat-num stat-fail">${data.failed}</div>
+                        <div class="stat-label">실패</div>
+                    </div>
+                    <div class="email-result-stat">
+                        <div class="stat-num" style="color:var(--text-primary);">${emails.length}</div>
+                        <div class="stat-label">전체</div>
+                    </div>
+                </div>
+                ${data.failed > 0 ? `
+                    <div style="margin-top:0.5rem; font-size:0.82rem; color:var(--text-muted);">
+                        <strong>실패 목록:</strong>
+                        <ul style="margin-top:0.3rem;">
+                            ${data.details.filter(d => !d.success).map(d =>
+                                `<li>${escapeHtml(d.email)}: ${escapeHtml(d.data?.error || '알 수 없는 오류')}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+            `;
+        } else {
+            throw new Error(data?.error || '발송 실패');
+        }
+
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+        statusEl.textContent = '발송 중 오류: ' + (err.message || err);
+        statusEl.className = 'form-status error';
+    } finally {
+        btn.disabled = false;
+    }
 }
 
 // ========== Helpers ==========
