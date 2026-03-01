@@ -790,6 +790,16 @@ function renderEmailRecipients(members) {
     updateEmailRecipientCount();
 }
 
+// 수신자 검색
+document.getElementById('email-search-input').addEventListener('input', function() {
+    const keyword = this.value.trim().toLowerCase();
+    document.querySelectorAll('#email-recipients-tbody .email-member-item').forEach(item => {
+        const name = (item.querySelector('.email-member-name')?.textContent || '').toLowerCase();
+        const email = (item.querySelector('.email-member-email')?.textContent || '').toLowerCase();
+        item.style.display = (!keyword || name.includes(keyword) || email.includes(keyword)) ? '' : 'none';
+    });
+});
+
 // 전체 선택 체크박스
 document.getElementById('email-select-all-cb').addEventListener('change', function() {
     const checkboxes = document.querySelectorAll('#email-recipients-tbody .email-member-cb:not(:disabled)');
