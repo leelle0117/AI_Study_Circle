@@ -622,7 +622,7 @@ function exportMembersCsv() {
 // ========== Email Bulk Send ==========
 let emailMembers = [];       // 이메일 탭에서 사용할 멤버 목록
 let emailEvents = [];        // 이메일 탭에서 사용할 이벤트 목록
-let emailFilterMode = 'all'; // 현재 필터 모드
+let emailFilterMode = 'manual'; // 현재 필터 모드
 
 async function loadEmailTab() {
     // 멤버 목록 로드 (이미 로드되었으면 재사용)
@@ -768,7 +768,7 @@ function renderEmailRecipients(members) {
         return `<div class="email-member-item">
             <input type="checkbox" class="email-member-cb" value="${escapeHtml(email)}"
                 data-name="${escapeHtml(m.name || '')}"
-                ${hasEmail ? 'checked' : 'disabled'}>
+                ${hasEmail ? '' : 'disabled'}>
             <span class="email-member-name">${escapeHtml(m.name || '-')}</span>
             ${hasEmail
                 ? `<span class="email-member-email">${escapeHtml(email)}</span>`
