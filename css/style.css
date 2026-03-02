@@ -2088,13 +2088,13 @@ footer {
 
 /* ========== SPEAK UP — LIGHT THEME ========== */
 body.speakup-light {
-    background: #eef1f6;
+    background: #d5dae3;
     color: #1a1a2e;
 }
 
 body.speakup-light nav {
-    background: rgba(235, 239, 245, 0.95);
-    border-bottom: 1px solid #d5dbe5;
+    background: rgba(210, 215, 226, 0.96);
+    border-bottom: 1px solid #bfc5d2;
 }
 
 body.speakup-light .nav-logo .sc { color: #1a1a2e; }
@@ -2116,21 +2116,21 @@ body.speakup-light .dropdown-item:hover {
     color: var(--accent-blue);
 }
 
-body.speakup-light .speakup-page { background: #eef1f6; }
+body.speakup-light .speakup-page { background: #d5dae3; }
 
 body.speakup-light .section-label { color: var(--accent-blue); }
 body.speakup-light .section-title { color: #1a1a2e; }
 body.speakup-light .section-desc { color: #666; }
 
 body.speakup-light .post-form {
-    background: #f5f7fa;
-    border-color: #d5dbe5;
+    background: #e8ebf0;
+    border-color: #c8ced9;
 }
 
 body.speakup-light .post-form input,
 body.speakup-light .post-form textarea {
-    background: #f9fafb;
-    border-color: #cdd4de;
+    background: #f0f2f6;
+    border-color: #bfc5d2;
     color: #1a1a2e;
 }
 
@@ -2144,9 +2144,9 @@ body.speakup-light .post-form textarea:focus {
 }
 
 body.speakup-light .post-card {
-    background: #f8f9fc;
-    border-color: #dce1ea;
-    box-shadow: 0 2px 8px rgba(0, 20, 60, 0.05);
+    background: #eef0f4;
+    border-color: #c8ced9;
+    box-shadow: 0 2px 8px rgba(0, 20, 60, 0.08);
 }
 
 body.speakup-light .post-card:hover {
@@ -2226,8 +2226,8 @@ body.speakup-light .comment-delete-btn:hover {
 }
 
 body.speakup-light .comment-input {
-    background: #f5f7fa;
-    border-color: #cdd4de;
+    background: #e8ebf0;
+    border-color: #bfc5d2;
     color: #1a1a2e;
 }
 body.speakup-light .comment-input::placeholder { color: #999; }
@@ -2246,13 +2246,13 @@ body.speakup-light .btn-primary:hover {
 body.speakup-light .btn-secondary {
     color: #333;
     border: 2px solid #333;
-    background: #f5f7fa;
+    background: #e8ebf0;
 }
 
 body.speakup-light .btn-secondary:hover {
     color: #000;
     border-color: #000;
-    background: #e4e8f0;
+    background: #d5dae3;
 }
 
 body.speakup-light .post-login-prompt {
@@ -2277,8 +2277,8 @@ body.speakup-light .form-status.error { color: var(--accent-pink); }
 body.speakup-light .form-status.loading { color: var(--accent-blue); }
 
 body.speakup-light footer {
-    background: #e4e8f0;
-    border-top-color: #d5dbe5;
+    background: #c8ced9;
+    border-top-color: #bfc5d2;
 }
 body.speakup-light .footer-logo .ai { color: var(--accent-blue); }
 body.speakup-light .footer-text,
@@ -2286,8 +2286,8 @@ body.speakup-light .footer-since { color: #888; }
 
 body.speakup-light .mobile-menu-btn { color: #1a1a2e; }
 body.speakup-light .nav-links.show {
-    background: rgba(238, 241, 246, 0.98);
-    border-bottom-color: #d5dbe5;
+    background: rgba(213, 218, 227, 0.98);
+    border-bottom-color: #bfc5d2;
 }
 
 /* ========== SPEAKUP-LIGHT: PROFILE & FORM OVERRIDES ========== */
