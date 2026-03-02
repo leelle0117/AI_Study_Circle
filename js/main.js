@@ -126,18 +126,6 @@ function setStatus(el, message, type) {
     el.className = 'form-status ' + type;
 }
 
-// ========== Admin Role Sync ==========
-async function syncAdminRole(user, profile) {
-    if (!user || !profile) return profile;
-    const isAdminEmail = ADMIN_EMAILS.includes(user.email.toLowerCase());
-    if (isAdminEmail && profile.role !== 'admin') {
-        try {
-            profile = await DB.updateProfile(user.id, { role: 'admin' });
-        } catch (e) { /* ignore */ }
-    }
-    return profile;
-}
-
 // ========== 비밀번호 재설정 모달 강제 표시 ==========
 function showResetPasswordModal() {
     authModal.classList.add('open');
@@ -159,7 +147,7 @@ async function initAuth() {
         currentUser = session.user;
         try {
             currentProfile = await DB.getProfile(currentUser.id);
-            currentProfile = await syncAdminRole(currentUser, currentProfile);
+            // role은 DB에서 직접 관리 (클라이언트 측 role 변경 불가)
         } catch (e) {
             currentProfile = null;
         }
@@ -188,7 +176,7 @@ async function initAuth() {
             currentUser = session.user;
             try {
                 currentProfile = await DB.getProfile(currentUser.id);
-                currentProfile = await syncAdminRole(currentUser, currentProfile);
+                // role은 DB에서 직접 관리 (클라이언트 측 role 변경 불가)
             } catch (e) {
                 currentProfile = null;
             }

@@ -150,6 +150,12 @@
             if (navInquiryLink) {
                 navInquiryLink.addEventListener('click', function(e) {
                     e.preventDefault();
+                    // 로그인 상태면 기본 정보 채우기
+                    if (spCurrentUser && spCurrentProfile) {
+                        document.getElementById('inq-name').value = spCurrentProfile.name || '';
+                        document.getElementById('inq-phone').value = spCurrentProfile.phone || '';
+                        document.getElementById('inq-email').value = spCurrentUser.email || '';
+                    }
                     if (inquiryModal) {
                         inquiryModal.classList.add('open');
                         document.body.style.overflow = 'hidden';
@@ -206,7 +212,7 @@
                             email: email,
                             subject: subject,
                             message: message,
-                            user_id: null
+                            user_id: spCurrentUser ? spCurrentUser.id : null
                         });
                         statusEl.textContent = '문의가 접수되었습니다. 감사합니다!';
                         statusEl.className = 'form-status success';
