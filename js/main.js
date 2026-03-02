@@ -15,6 +15,12 @@ const authModal = document.getElementById('auth-modal');
 const modalCloseBtn = document.getElementById('modal-close-btn');
 
 function openModal(tab, options) {
+    // 로그인 상태에서 모달 열기 시도 → 프로필 페이지로 이동
+    if (currentUser && (!tab || tab === 'signup' || tab === 'login')) {
+        window.location.href = 'profile.html';
+        return;
+    }
+
     authModal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
@@ -23,40 +29,30 @@ function openModal(tab, options) {
         notice.style.display = (options && options.showNotice) ? 'block' : 'none';
     }
 
-    if (currentUser) {
-        // 로그인 상태: 프로필 현황 표시
-        document.getElementById('auth-container').style.display = 'none';
-        document.getElementById('profile-container').style.display = 'block';
-        document.getElementById('membership-title').textContent = '프로필 현황';
-        if (currentProfile) fillProfileAll();
+    document.getElementById('auth-container').style.display = 'block';
+
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+    const forgotForm = document.getElementById('forgot-password-form');
+    const resetForm = document.getElementById('reset-password-form');
+
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'none';
+    forgotForm.style.display = 'none';
+    resetForm.style.display = 'none';
+
+    if (tab === 'forgot') {
+        forgotForm.style.display = 'block';
+        document.getElementById('membership-title').textContent = '비밀번호 찾기';
+    } else if (tab === 'reset') {
+        resetForm.style.display = 'block';
+        document.getElementById('membership-title').textContent = '비밀번호 재설정';
+    } else if (tab === 'login') {
+        loginForm.style.display = 'block';
+        document.getElementById('membership-title').textContent = '로그인';
     } else {
-        // 비로그인 상태: 가입/로그인/비밀번호찾기/재설정 표시
-        document.getElementById('auth-container').style.display = 'block';
-        document.getElementById('profile-container').style.display = 'none';
-
-        const signupForm = document.getElementById('signup-form');
-        const loginForm = document.getElementById('login-form');
-        const forgotForm = document.getElementById('forgot-password-form');
-        const resetForm = document.getElementById('reset-password-form');
-
-        signupForm.style.display = 'none';
-        loginForm.style.display = 'none';
-        forgotForm.style.display = 'none';
-        resetForm.style.display = 'none';
-
-        if (tab === 'forgot') {
-            forgotForm.style.display = 'block';
-            document.getElementById('membership-title').textContent = '비밀번호 찾기';
-        } else if (tab === 'reset') {
-            resetForm.style.display = 'block';
-            document.getElementById('membership-title').textContent = '비밀번호 재설정';
-        } else if (tab === 'login') {
-            loginForm.style.display = 'block';
-            document.getElementById('membership-title').textContent = '로그인';
-        } else {
-            signupForm.style.display = 'block';
-            document.getElementById('membership-title').textContent = '멤버 가입';
-        }
+        signupForm.style.display = 'block';
+        document.getElementById('membership-title').textContent = '멤버 가입';
     }
 }
 
@@ -147,7 +143,6 @@ function showResetPasswordModal() {
     authModal.classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('auth-container').style.display = 'block';
-    document.getElementById('profile-container').style.display = 'none';
     document.getElementById('signup-form').style.display = 'none';
     document.getElementById('login-form').style.display = 'none';
     document.getElementById('forgot-password-form').style.display = 'none';
@@ -214,12 +209,10 @@ async function initAuth() {
 function updateUI() {
     const navLoginLink = document.getElementById('nav-login-link');
     const navSignupLink = document.getElementById('nav-signup-link');
+    const navProfileLink = document.getElementById('nav-profile-link');
     const navUserMenu = document.getElementById('nav-user-menu');
     const navUserName = document.getElementById('nav-user-name');
     const navAdminLink = document.getElementById('nav-admin-link');
-    const authContainer = document.getElementById('auth-container');
-    const profileContainer = document.getElementById('profile-container');
-    const membershipTitle = document.getElementById('membership-title');
 
     const heroSignupBtn = document.getElementById('hero-signup-btn');
 
@@ -227,57 +220,27 @@ function updateUI() {
         // 로그인 상태
         navLoginLink.style.display = 'none';
         navSignupLink.style.display = 'none';
+        if (navProfileLink) navProfileLink.style.display = 'block';
         navUserMenu.style.display = 'block';
         navUserName.textContent = (currentProfile && currentProfile.name) || currentUser.email;
         if (heroSignupBtn) heroSignupBtn.style.display = 'none';
 
         // 관리자 링크
         navAdminLink.style.display = (currentProfile && currentProfile.role === 'admin') ? 'block' : 'none';
-
-        // 멤버십 섹션 → 프로필 현황 모드
-        authContainer.style.display = 'none';
-        profileContainer.style.display = 'block';
-        membershipTitle.textContent = '프로필 현황';
-
-        // 프로필 데이터 채우기
-        if (currentProfile) fillProfileAll();
     } else {
         // 비로그인 상태
         navLoginLink.style.display = 'block';
         navSignupLink.style.display = 'block';
+        if (navProfileLink) navProfileLink.style.display = 'none';
         navUserMenu.style.display = 'none';
         navAdminLink.style.display = 'none';
         if (heroSignupBtn) heroSignupBtn.style.display = '';
-
-        authContainer.style.display = 'block';
-        profileContainer.style.display = 'none';
     }
 
     // 동적 참여 버튼 UI 업데이트
     updateAttendUI();
     // 문의 폼에 기본 정보 채우기
     fillInquiryForm();
-}
-
-function fillProfileAll() {
-    if (!currentProfile) return;
-    // 읽기전용 정보
-    document.getElementById('pv-name').textContent = currentProfile.name || '-';
-    document.getElementById('pv-phone').textContent = currentProfile.phone || '-';
-    document.getElementById('pv-email').textContent = (currentUser && currentUser.email) || '-';
-    // 숨겨진 input (저장용)
-    document.getElementById('p-name').value = currentProfile.name || '';
-    document.getElementById('p-contact').value = currentProfile.phone || '';
-    // 수정 가능 필드
-    document.getElementById('p-current-job').value = currentProfile.current_job || '';
-    document.getElementById('p-type').value = currentProfile.member_type || '';
-    document.getElementById('p-message').value = currentProfile.message || '';
-    // 관심분야 체크
-    const checkboxes = document.querySelectorAll('#profile-interests input[type="checkbox"]');
-    const interests = currentProfile.interests || [];
-    checkboxes.forEach(cb => {
-        cb.checked = interests.includes(cb.value);
-    });
 }
 
 // ========== Helper: escape HTML ==========
@@ -756,9 +719,9 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
             }
         }
 
-        setStatus(statusEl, '가입이 완료되었습니다! 환영합니다.', 'success');
+        setStatus(statusEl, '가입이 완료되었습니다! 프로필 페이지로 이동합니다.', 'success');
         e.target.reset();
-        setTimeout(closeModal, 1500);
+        setTimeout(function() { window.location.href = 'profile.html'; }, 1500);
     } catch (err) {
         console.error('Signup error:', err);
         const errMsg = err.message || String(err);
@@ -874,96 +837,6 @@ document.getElementById('reset-password-form').addEventListener('submit', async 
     } catch (err) {
         console.error('Reset password error:', err);
         console.error('Full error object:', JSON.stringify(err, null, 2));
-        const msg = err.message || '비밀번호 변경 중 오류가 발생했습니다.';
-        setStatus(statusEl, msg, 'error');
-    } finally {
-        btn.disabled = false;
-    }
-});
-
-// ========== Profile Update ==========
-document.getElementById('profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const statusEl = document.getElementById('profile-status');
-    const btn = e.target.querySelector('.form-submit');
-
-    const name = document.getElementById('p-name').value.trim();
-    const phone = sanitizePhone(document.getElementById('p-contact').value);
-    const currentJob = document.getElementById('p-current-job').value.trim();
-    const memberType = document.getElementById('p-type').value;
-    const message = document.getElementById('p-message').value.trim();
-    const checked = e.target.querySelectorAll('input[name="interests"]:checked');
-    const interests = Array.from(checked).map(c => c.value);
-
-    setStatus(statusEl, '저장 중...', 'loading');
-    btn.disabled = true;
-
-    try {
-        currentProfile = await DB.updateProfile(currentUser.id, {
-            name,
-            phone,
-            current_job: currentJob,
-            interests,
-            member_type: memberType,
-            message
-        });
-        document.getElementById('nav-user-name').textContent = name;
-        fillProfileAll();
-        setStatus(statusEl, '프로필이 저장되었습니다.', 'success');
-
-        // 2초 후 모달 자동 닫기
-        setTimeout(() => {
-            if (authModal) {
-                authModal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }, 2000);
-    } catch (err) {
-        setStatus(statusEl, '저장 중 오류가 발생했습니다.', 'error');
-    } finally {
-        btn.disabled = false;
-    }
-});
-
-// ========== Password Change ==========
-document.getElementById('password-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const statusEl = document.getElementById('password-status');
-    const btn = e.target.querySelector('.form-submit');
-
-    const newPw = document.getElementById('pw-new').value;
-    const confirmPw = document.getElementById('pw-confirm').value;
-
-    if (newPw.length < 6) {
-        setStatus(statusEl, '비밀번호는 6자 이상이어야 합니다.', 'error');
-        return;
-    }
-    if (!/^[a-zA-Z0-9]+$/.test(newPw)) {
-        setStatus(statusEl, '비밀번호는 영문과 숫자만 사용할 수 있습니다.', 'error');
-        return;
-    }
-    if (newPw !== confirmPw) {
-        setStatus(statusEl, '비밀번호가 일치하지 않습니다.', 'error');
-        return;
-    }
-
-    setStatus(statusEl, '변경 중...', 'loading');
-    btn.disabled = true;
-
-    try {
-        const { error } = await _supabase.auth.updateUser({ password: newPw });
-        if (error) throw error;
-        setStatus(statusEl, '비밀번호가 변경되었습니다.', 'success');
-        e.target.reset();
-
-        // 2초 후 모달 자동 닫기
-        setTimeout(() => {
-            if (authModal) {
-                authModal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }, 2000);
-    } catch (err) {
         const msg = err.message || '비밀번호 변경 중 오류가 발생했습니다.';
         setStatus(statusEl, msg, 'error');
     } finally {

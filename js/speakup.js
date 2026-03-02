@@ -95,6 +95,7 @@ document.querySelectorAll('.dropdown-item').forEach(function(item) {
 function spUpdateAuthUI() {
     var navLoginLink = document.getElementById('nav-login-link');
     var navSignupLink = document.getElementById('nav-signup-link');
+    var navProfileLink = document.getElementById('nav-profile-link');
     var navUserMenu = document.getElementById('nav-user-menu');
     var navUserName = document.getElementById('nav-user-name');
     var navAdminLink = document.getElementById('nav-admin-link');
@@ -106,6 +107,7 @@ function spUpdateAuthUI() {
     if (spCurrentUser) {
         navLoginLink.style.display = 'none';
         navSignupLink.style.display = 'none';
+        if (navProfileLink) navProfileLink.style.display = 'block';
         navUserMenu.style.display = 'block';
         navUserName.textContent = (spCurrentProfile && spCurrentProfile.name) || spCurrentUser.email;
         navAdminLink.style.display = (spCurrentProfile && spCurrentProfile.role === 'admin') ? 'block' : 'none';
@@ -114,6 +116,7 @@ function spUpdateAuthUI() {
     } else {
         navLoginLink.style.display = 'block';
         navSignupLink.style.display = 'block';
+        if (navProfileLink) navProfileLink.style.display = 'none';
         navUserMenu.style.display = 'none';
         navAdminLink.style.display = 'none';
         postWriteBtnWrap.style.display = 'none';

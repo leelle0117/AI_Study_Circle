@@ -28,7 +28,6 @@ if (_supabase) {
 
 // ========== Admin Emails ==========
 var ADMIN_EMAILS = [
-    'wksun999@gmail.com',
     'lsonic.lee@gmail.com'
 ];
 
