@@ -2328,6 +2328,34 @@ body.speakup-light .form-group .required { color: var(--accent-pink); }
 body.speakup-light .password-change-section { border-top-color: #d5dbe5; }
 body.speakup-light .password-change-section h3 { color: #1a1a2e; }
 
+/* ========== SPEAKUP-LIGHT: MODAL DARK THEME 복원 ========== */
+body.speakup-light .modal-overlay { color: var(--text-primary); }
+body.speakup-light .modal-overlay .modal-title { color: var(--text-primary); }
+body.speakup-light .modal-overlay .form-group label { color: var(--text-primary); }
+body.speakup-light .modal-overlay .form-group .required { color: var(--accent-cyan); }
+body.speakup-light .modal-overlay .form-group input,
+body.speakup-light .modal-overlay .form-group select,
+body.speakup-light .modal-overlay .form-group textarea {
+    background: var(--bg-card);
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+body.speakup-light .modal-overlay .form-group input::placeholder,
+body.speakup-light .modal-overlay .form-group textarea::placeholder { color: var(--text-muted); }
+body.speakup-light .modal-overlay .form-group input:focus,
+body.speakup-light .modal-overlay .form-group select:focus,
+body.speakup-light .modal-overlay .form-group textarea:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+}
+body.speakup-light .modal-overlay .btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: #fff;
+}
+body.speakup-light .modal-overlay .btn-primary:hover {
+    box-shadow: 0 4px 20px rgba(77, 124, 255, 0.4);
+}
+
 /* ========== SPEAK UP — MAIN PREVIEW ========== */
 .speakup-preview-section {
     background: var(--bg-secondary);
