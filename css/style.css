@@ -2290,6 +2290,44 @@ body.speakup-light .nav-links.show {
     border-bottom-color: #e0e0e0;
 }
 
+/* ========== SPEAKUP-LIGHT: PROFILE & FORM OVERRIDES ========== */
+body.speakup-light .profile-info-item {
+    background: #f8f9fa;
+    border-color: #e0e0e0;
+}
+body.speakup-light .profile-label { color: #888; }
+body.speakup-light .profile-value { color: #1a1a2e; }
+body.speakup-light .form-group label { color: #1a1a2e; }
+body.speakup-light .form-group input,
+body.speakup-light .form-group select,
+body.speakup-light .form-group textarea {
+    background: #ffffff;
+    border-color: #d0d0d0;
+    color: #1a1a2e;
+}
+body.speakup-light .form-group input::placeholder,
+body.speakup-light .form-group textarea::placeholder { color: #999; }
+body.speakup-light .form-group input:focus,
+body.speakup-light .form-group select:focus,
+body.speakup-light .form-group textarea:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(77, 124, 255, 0.1);
+}
+body.speakup-light .form-group select option {
+    background: #fff;
+    color: #1a1a2e;
+}
+body.speakup-light .checkbox-item {
+    background: #f8f9fa;
+    border-color: #d0d0d0;
+    color: #1a1a2e;
+}
+body.speakup-light .checkbox-item:hover { border-color: var(--accent-blue); }
+body.speakup-light .form-hint { color: #888; }
+body.speakup-light .form-group .required { color: var(--accent-pink); }
+body.speakup-light .password-change-section { border-top-color: #e0e0e0; }
+body.speakup-light .password-change-section h3 { color: #1a1a2e; }
+
 /* ========== SPEAK UP — MAIN PREVIEW ========== */
 .speakup-preview-section {
     background: var(--bg-secondary);
