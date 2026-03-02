@@ -2088,13 +2088,13 @@ footer {
 
 /* ========== SPEAK UP — LIGHT THEME ========== */
 body.speakup-light {
-    background: #d5dae3;
+    background: #e5e9f0;
     color: #1a1a2e;
 }
 
 body.speakup-light nav {
-    background: rgba(210, 215, 226, 0.96);
-    border-bottom: 1px solid #bfc5d2;
+    background: rgba(229, 233, 240, 0.96);
+    border-bottom: 1px solid #cdd3de;
 }
 
 body.speakup-light .nav-logo .sc { color: #1a1a2e; }
@@ -2116,21 +2116,21 @@ body.speakup-light .dropdown-item:hover {
     color: var(--accent-blue);
 }
 
-body.speakup-light .speakup-page { background: #d5dae3; }
+body.speakup-light .speakup-page { background: #e5e9f0; }
 
 body.speakup-light .section-label { color: var(--accent-blue); }
 body.speakup-light .section-title { color: #1a1a2e; }
 body.speakup-light .section-desc { color: #666; }
 
 body.speakup-light .post-form {
-    background: #e8ebf0;
-    border-color: #c8ced9;
+    background: #eef0f5;
+    border-color: #d5dbe5;
 }
 
 body.speakup-light .post-form input,
 body.speakup-light .post-form textarea {
-    background: #f0f2f6;
-    border-color: #bfc5d2;
+    background: #f5f7fa;
+    border-color: #cdd4de;
     color: #1a1a2e;
 }
 
@@ -2144,8 +2144,8 @@ body.speakup-light .post-form textarea:focus {
 }
 
 body.speakup-light .post-card {
-    background: #eef0f4;
-    border-color: #c8ced9;
+    background: #f3f5f8;
+    border-color: #d5dbe5;
     box-shadow: 0 2px 8px rgba(0, 20, 60, 0.08);
 }
 
@@ -2226,8 +2226,8 @@ body.speakup-light .comment-delete-btn:hover {
 }
 
 body.speakup-light .comment-input {
-    background: #e8ebf0;
-    border-color: #bfc5d2;
+    background: #eef0f5;
+    border-color: #cdd4de;
     color: #1a1a2e;
 }
 body.speakup-light .comment-input::placeholder { color: #999; }
@@ -2246,13 +2246,13 @@ body.speakup-light .btn-primary:hover {
 body.speakup-light .btn-secondary {
     color: #333;
     border: 2px solid #333;
-    background: #e8ebf0;
+    background: #eef0f5;
 }
 
 body.speakup-light .btn-secondary:hover {
     color: #000;
     border-color: #000;
-    background: #d5dae3;
+    background: #e0e4ec;
 }
 
 body.speakup-light .post-login-prompt {
@@ -2277,8 +2277,8 @@ body.speakup-light .form-status.error { color: var(--accent-pink); }
 body.speakup-light .form-status.loading { color: var(--accent-blue); }
 
 body.speakup-light footer {
-    background: #c8ced9;
-    border-top-color: #bfc5d2;
+    background: #dbe0e8;
+    border-top-color: #cdd3de;
 }
 body.speakup-light .footer-logo .ai { color: var(--accent-blue); }
 body.speakup-light .footer-text,
@@ -2286,8 +2286,8 @@ body.speakup-light .footer-since { color: #888; }
 
 body.speakup-light .mobile-menu-btn { color: #1a1a2e; }
 body.speakup-light .nav-links.show {
-    background: rgba(213, 218, 227, 0.98);
-    border-bottom-color: #bfc5d2;
+    background: rgba(229, 233, 240, 0.98);
+    border-bottom-color: #cdd3de;
 }
 
 /* ========== SPEAKUP-LIGHT: PROFILE & FORM OVERRIDES ========== */
