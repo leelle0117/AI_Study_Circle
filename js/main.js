@@ -707,9 +707,12 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
             }
         }
 
-        setStatus(statusEl, '가입이 완료되었습니다! 프로필 페이지로 이동합니다.', 'success');
+        statusEl.innerHTML = '🎉 가입을 환영합니다! 프로필 페이지로 이동합니다.<br><br>' +
+            '💬 카카오톡 오픈채팅방에도 참여해주세요!<br>' +
+            '<a href="https://open.kakao.com/o/gHlDF3fi" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan); text-decoration:underline;">https://open.kakao.com/o/gHlDF3fi</a>';
+        statusEl.className = 'form-status success';
         e.target.reset();
-        setTimeout(function() { window.location.href = 'profile.html'; }, 1500);
+        setTimeout(function() { window.location.href = 'profile.html'; }, 3000);
     } catch (err) {
         console.error('Signup error:', err);
         const errMsg = err.message || String(err);
