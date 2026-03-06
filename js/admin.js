@@ -524,7 +524,7 @@ function renderInquiries(inquiries) {
     tbody.innerHTML = inquiries.map(inq => {
         const date = inq.created_at ? new Date(inq.created_at).toLocaleDateString('ko-KR') : '-';
         return `<tr>
-            <td>${escapeHtml(inq.name || '-')}</td>
+            <td>${escapeHtml(inq.name || '-')}${!inq.user_id ? ' <span style="font-size:0.75em;color:#e74c3c;border:1px solid #e74c3c;border-radius:3px;padding:1px 4px;">비회원</span>' : ''}</td>
             <td>${escapeHtml(inq.phone || '-')}</td>
             <td>${escapeHtml(inq.email || '-')}</td>
             <td>${escapeHtml(inq.subject || '-')}</td>
@@ -544,7 +544,7 @@ function viewInquiryDetail(id) {
     const inq = allInquiries.find(i => i.id === id);
     if (!inq) return;
 
-    document.getElementById('inq-detail-name').textContent = inq.name || '-';
+    document.getElementById('inq-detail-name').innerHTML = escapeHtml(inq.name || '-') + (!inq.user_id ? ' <span style="font-size:0.75em;color:#e74c3c;border:1px solid #e74c3c;border-radius:3px;padding:1px 4px;">비회원</span>' : '');
     document.getElementById('inq-detail-phone').textContent = inq.phone || '-';
     document.getElementById('inq-detail-email').textContent = inq.email || '-';
     document.getElementById('inq-detail-subject').textContent = inq.subject || '-';
