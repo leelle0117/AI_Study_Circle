@@ -572,9 +572,14 @@ var postEditId = document.getElementById('post-edit-id');
 var postCancelBtn = document.getElementById('post-cancel-btn');
 var postSubmitBtn = document.getElementById('post-submit-btn');
 
-// form submit 막기
+// form submit 시 등록 버튼 클릭으로 전달 (Enter 키 대응)
 if (postForm) {
-    postForm.addEventListener('submit', function(e) { e.preventDefault(); });
+    postForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (postSubmitBtn && !postSubmitBtn.disabled) {
+            postSubmitBtn.click();
+        }
+    });
 }
 
 // 등록/수정 버튼 클릭
