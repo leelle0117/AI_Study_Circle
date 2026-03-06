@@ -259,10 +259,14 @@ var DB = {
     // -- Inquiries --
     async createInquiry(inquiry) {
         var { data, error } = await _supabase
-            .from('inquiries')
-            .insert(inquiry)
-            .select()
-            .single();
+            .rpc('create_inquiry', {
+                p_name: inquiry.name,
+                p_phone: inquiry.phone || null,
+                p_email: inquiry.email || null,
+                p_subject: inquiry.subject || null,
+                p_message: inquiry.message || null,
+                p_user_id: inquiry.user_id || null
+            });
         if (error) throw error;
         return data;
     },
