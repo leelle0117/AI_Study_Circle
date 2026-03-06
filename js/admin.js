@@ -832,7 +832,7 @@ function previewEmail() {
     const previewBody = document.getElementById('email-preview-body');
     // HTML 태그가 포함되어 있으면 그대로 렌더링, 아니면 줄바꿈 변환
     if (/<[a-z][\s\S]*>/i.test(body)) {
-        previewBody.innerHTML = body;
+        previewBody.innerHTML = sanitizeEmailHtml(body);
     } else {
         previewBody.innerHTML = escapeHtml(body).replace(/\n/g, '<br>');
     }
@@ -877,7 +877,7 @@ async function sendBulkEmail() {
     // 본문 HTML 변환
     let htmlBody;
     if (/<[a-z][\s\S]*>/i.test(body)) {
-        htmlBody = body;
+        htmlBody = sanitizeEmailHtml(body);
     } else {
         htmlBody = escapeHtml(body).replace(/\n/g, '<br>');
     }
@@ -973,6 +973,19 @@ function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// HTML 이메일용 sanitize: script/iframe/object 태그 및 on* 이벤트 핸들러 제거
+function sanitizeEmailHtml(html) {
+    return html
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+        .replace(/<object[\s\S]*?<\/object>/gi, '')
+        .replace(/<embed[\s\S]*?>/gi, '')
+        .replace(/<script[\s\S]*?>/gi, '')
+        .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
+        .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
+        .replace(/javascript\s*:/gi, '');
 }
 
 // ========== Init ==========

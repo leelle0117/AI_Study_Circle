@@ -238,6 +238,14 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+// ========== Helper: safe URL (http/https만 허용) ==========
+function safeUrl(url) {
+    if (!url) return '';
+    var trimmed = url.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return '';
+}
+
 // ========== Helper: format event date ==========
 function formatEventDate(dateStr, dayLabel) {
     // dateStr: "2025-02-06" 형태
@@ -316,7 +324,7 @@ async function renderScheduleEvents() {
                         <div class="schedule-info-icon">🔗</div>
                         <div class="schedule-info-text">
                             <div class="info-label">네이버 지도</div>
-                            <div class="info-value"><a href="${escapeHtml(ev.map_url)}" target="_blank" rel="noopener noreferrer">지도에서 보기 →</a></div>
+                            <div class="info-value"><a href="${escapeHtml(safeUrl(ev.map_url))}" target="_blank" rel="noopener noreferrer">지도에서 보기 →</a></div>
                         </div>
                     </div>`;
             }
@@ -347,7 +355,7 @@ async function renderScheduleEvents() {
                         <div class="schedule-info-icon">🎬</div>
                         <div class="schedule-info-text">
                             <div class="info-label">온라인 참여</div>
-                            <div class="info-value"><a href="${escapeHtml(ev.youtube_url)}" target="_blank" rel="noopener noreferrer">유튜브 라이브 참여하기 →</a></div>
+                            <div class="info-value"><a href="${escapeHtml(safeUrl(ev.youtube_url))}" target="_blank" rel="noopener noreferrer">유튜브 라이브 참여하기 →</a></div>
                         </div>
                     </div>`;
             }
@@ -653,13 +661,9 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     const checked = e.target.querySelectorAll('input[name="interests"]:checked');
     const interests = Array.from(checked).map(c => c.value);
 
-    // 비밀번호 유효성: 영문+숫자만, 6자 이상
+    // 비밀번호 유효성: 6자 이상
     if (password.length < 6) {
         setStatus(statusEl, '비밀번호는 6자 이상이어야 합니다.', 'error');
-        return;
-    }
-    if (!/^[a-zA-Z0-9]+$/.test(password)) {
-        setStatus(statusEl, '비밀번호는 영문과 숫자만 사용할 수 있습니다.', 'error');
         return;
     }
 
