@@ -1005,10 +1005,7 @@ async function viewRsvps(eventId, eventTitle) {
 
     try {
         const { data, error } = await _supabase
-            .from('rsvps')
-            .select('*')
-            .eq('event_id', eventId)
-            .order('created_at', { ascending: true });
+            .rpc('get_rsvps', { p_event_id: eventId });
         if (error) throw error;
 
         if (!data || data.length === 0) {
