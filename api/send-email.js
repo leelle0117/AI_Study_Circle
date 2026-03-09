@@ -78,6 +78,9 @@ module.exports = async function handler(req, res) {
         const results = [];
         for (const email of to) {
             try {
+                // 수신자별 개인화: {{RECIPIENT_EMAIL}} 치환
+                const personalizedHtml = html.replace(/\{\{RECIPIENT_EMAIL\}\}/g, encodeURIComponent(email));
+
                 const sendRes = await fetch('https://api.resend.com/emails', {
                     method: 'POST',
                     headers: {
@@ -88,7 +91,7 @@ module.exports = async function handler(req, res) {
                         from: 'AI Study 110 <noreply@study110.ai.kr>',
                         to: [email],
                         subject: subject,
-                        html: html
+                        html: personalizedHtml
                     })
                 });
                 const data = await sendRes.json();

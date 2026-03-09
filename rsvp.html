@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>참석 응답 — AI Study 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+            background: #0a0a1a;
+            color: #f0f0f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .rsvp-card {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .rsvp-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .rsvp-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .rsvp-desc {
+            color: #a0a0b8;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        .rsvp-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .badge-attend {
+            background: linear-gradient(135deg, #00e5ff22, #7c4dff22);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+        }
+        .badge-decline {
+            background: rgba(255,107,107,0.1);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        .badge-error {
+            background: rgba(255,193,7,0.1);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+        .rsvp-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 1.5rem;
+            background: linear-gradient(135deg, #00e5ff, #7c4dff);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .rsvp-link:hover {
+            opacity: 0.9;
+        }
+        .logo {
+            margin-bottom: 2rem;
+        }
+        .logo .ai { color: #00e5ff; font-weight: 700; font-size: 1.2rem; }
+        .logo .sc { color: #fff; font-weight: 600; font-size: 1.1rem; }
+        .logo .num { color: #00e5ff; font-weight: 700; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="rsvp-card">
+        <div class="logo">
+            <span class="ai">AI</span>
+            <span class="sc"> Study </span>
+            <span class="num">110</span>
+        </div>
+        <div id="rsvp-content"></div>
+        <a href="https://study110.ai.kr" class="rsvp-link">사이트 방문하기</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('status');
+        const response = params.get('response');
+        const msg = params.get('msg');
+        const container = document.getElementById('rsvp-content');
+
+        if (status === 'success' && response === 'attend') {
+            container.innerHTML = `
+                <div class="rsvp-icon">🎉</div>
+                <h1 class="rsvp-title">참석 응답이 등록되었습니다!</h1>
+                <div class="rsvp-badge badge-attend">참석 확인 완료</div>
+                <p class="rsvp-desc">
+                    모임에서 뵙겠습니다!<br>
+                    응답을 변경하고 싶으시면 이메일의 링크를 다시 클릭해주세요.
+                </p>
+            `;
+        } else if (status === 'success' && response === 'decline') {
+            container.innerHTML = `
+                <div class="rsvp-icon">📝</div>
+                <h1 class="rsvp-title">불참 응답이 등록되었습니다</h1>
+                <div class="rsvp-badge badge-decline">불참 등록 완료</div>
+                <p class="rsvp-desc">
+                    다음 모임에서 뵙겠습니다!<br>
+                    응답을 변경하고 싶으시면 이메일의 링크를 다시 클릭해주세요.
+                </p>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="rsvp-icon">⚠️</div>
+                <h1 class="rsvp-title">처리 중 오류가 발생했습니다</h1>
+                <div class="rsvp-badge badge-error">오류</div>
+                <p class="rsvp-desc">
+                    잠시 후 다시 시도해주세요.<br>
+                    문제가 계속되면 관리자에게 문의해주세요.
+                </p>
+            `;
+        }
+    </script>
+</body>
+</html>

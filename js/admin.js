@@ -184,7 +184,10 @@ function renderEvents(events) {
             <td>${time}</td>
             <td>${escapeHtml(ev.location || '-')}</td>
             <td>${status}</td>
-            <td><button class="btn-secondary btn-small" onclick="viewAttendees(${ev.id}, '${escapeHtml(ev.title)}')">보기</button></td>
+            <td>
+                <button class="btn-secondary btn-small" onclick="viewAttendees(${ev.id}, '${escapeHtml(ev.title)}')">참여자</button>
+                <button class="btn-secondary btn-small" onclick="viewRsvps(${ev.id}, '${escapeHtml(ev.title)}')" style="color:var(--accent-cyan);">RSVP</button>
+            </td>
             <td>
                 <button class="btn-secondary btn-small" onclick="editEvent(${ev.id})">수정</button>
                 <button class="btn-secondary btn-small" onclick="toggleEventActive(${ev.id}, ${ev.is_active})">${ev.is_active ? '비활성화' : '활성화'}</button>
@@ -986,6 +989,67 @@ function sanitizeEmailHtml(html) {
         .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
         .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
         .replace(/javascript\s*:/gi, '');
+}
+
+// ========== RSVP ==========
+async function viewRsvps(eventId, eventTitle) {
+    const card = document.getElementById('rsvp-card');
+    const tbody = document.getElementById('rsvp-tbody');
+    const titleEl = document.getElementById('rsvp-title');
+    const countEl = document.getElementById('rsvp-count');
+
+    card.style.display = 'block';
+    titleEl.textContent = `"${eventTitle}" RSVP 응답`;
+    tbody.innerHTML = '<tr><td colspan="5" class="admin-loading">로딩 중...</td></tr>';
+    countEl.textContent = '';
+
+    try {
+        const { data, error } = await _supabase
+            .from('rsvps')
+            .select('*')
+            .eq('event_id', eventId)
+            .order('created_at', { ascending: true });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="admin-empty">RSVP 응답이 없습니다.</td></tr>';
+            countEl.textContent = '';
+        } else {
+            const attendCount = data.filter(r => r.response === 'attend').length;
+            const declineCount = data.filter(r => r.response === 'decline').length;
+
+            tbody.innerHTML = data.map(r => {
+                const badge = r.response === 'attend'
+                    ? '<span class="admin-badge active">참석</span>'
+                    : '<span class="admin-badge inactive">불참</span>';
+                const date = r.updated_at ? new Date(r.updated_at).toLocaleString('ko-KR') : '-';
+                return `<tr>
+                    <td>${escapeHtml(r.name || '-')}</td>
+                    <td>${escapeHtml(r.email)}</td>
+                    <td>${badge}</td>
+                    <td>${date}</td>
+                    <td><button class="btn-secondary btn-small" onclick="deleteRsvp(${r.id}, ${eventId}, '${escapeHtml(eventTitle)}')" style="color:var(--accent-pink);">삭제</button></td>
+                </tr>`;
+            }).join('');
+
+            countEl.textContent = `참석 ${attendCount}명 / 불참 ${declineCount}명 / 전체 ${data.length}명`;
+        }
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" class="admin-empty">RSVP 목록을 불러올 수 없습니다.</td></tr>';
+    }
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function deleteRsvp(rsvpId, eventId, eventTitle) {
+    if (!confirm('이 RSVP 응답을 삭제하시겠습니까?')) return;
+    try {
+        const { error } = await _supabase.from('rsvps').delete().eq('id', rsvpId);
+        if (error) throw error;
+        viewRsvps(eventId, eventTitle);
+    } catch (e) {
+        alert('삭제 중 오류가 발생했습니다.');
+    }
 }
 
 // ========== Init ==========
