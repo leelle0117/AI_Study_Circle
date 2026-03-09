@@ -75,8 +75,11 @@ module.exports = async function handler(req, res) {
         }
 
         // 4. 개별 이메일 발송 (BCC 대신 개별 발송으로 개인정보 보호)
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         const results = [];
-        for (const email of to) {
+        for (let i = 0; i < to.length; i++) {
+            const email = to[i];
+            if (i > 0) await delay(600); // Resend 초당 2건 제한 대응
             try {
                 // 수신자별 개인화: {{RECIPIENT_EMAIL}} 치환
                 const personalizedHtml = html.replace(/\{\{RECIPIENT_EMAIL\}\}/g, encodeURIComponent(email));
