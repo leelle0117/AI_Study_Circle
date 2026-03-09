@@ -15,6 +15,11 @@ module.exports = async function handler(req, res) {
         return res.redirect(302, '/rsvp.html?status=error&msg=invalid_params');
     }
 
+    const eventIdNum = parseInt(event_id, 10);
+    if (isNaN(eventIdNum) || eventIdNum <= 0) {
+        return res.redirect(302, '/rsvp.html?status=error&msg=invalid_event_id');
+    }
+
     if (response !== 'attend' && response !== 'decline') {
         return res.redirect(302, '/rsvp.html?status=error&msg=invalid_response');
     }
@@ -42,7 +47,7 @@ module.exports = async function handler(req, res) {
 
         // 기존 RSVP 확인
         const checkRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/rsvps?event_id=eq.${event_id}&email=eq.${encodeURIComponent(email)}&select=id`,
+            `${SUPABASE_URL}/rest/v1/rsvps?event_id=eq.${eventIdNum}&email=eq.${encodeURIComponent(email)}&select=id`,
             {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
@@ -88,7 +93,7 @@ module.exports = async function handler(req, res) {
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
-                        event_id: parseInt(event_id),
+                        event_id: eventIdNum,
                         email: email,
                         name: name,
                         response: response

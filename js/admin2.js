@@ -975,7 +975,7 @@ async function sendBulkEmail() {
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
-    return div.innerHTML;
+    return div.innerHTML.replace(/'/g, '&#39;');
 }
 
 // HTML 이메일용 sanitize: script/iframe/object 태그 및 on* 이벤트 핸들러 제거
