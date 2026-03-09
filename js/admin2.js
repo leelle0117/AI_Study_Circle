@@ -1008,9 +1008,6 @@ async function viewRsvps(eventId, eventTitle) {
             .rpc('get_rsvps', { p_event_id: eventId });
         if (error) throw error;
 
-        console.log('RSVP data:', JSON.stringify(data));
-        alert('RSVP 조회: ' + (data ? data.length : 0) + '건');
-
         if (!data || data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" class="admin-empty">RSVP 응답이 없습니다.</td></tr>';
             countEl.textContent = '';
