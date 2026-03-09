@@ -631,6 +631,10 @@
                                 <input type="radio" name="email-filter" value="manual" checked>
                                 <span>직접 선택</span>
                             </label>
+                            <label class="email-filter-radio">
+                                <input type="radio" name="email-filter" value="direct">
+                                <span>직접 입력</span>
+                            </label>
                         </div>
 
                         <!-- 모임 참여자별 필터 -->
@@ -653,6 +657,14 @@
                             <select id="email-type-select" class="admin-search">
                                 <option value="">-- 유형을 선택하세요 --</option>
                             </select>
+                        </div>
+
+                        <!-- 직접 입력 -->
+                        <div id="email-filter-direct" class="email-filter-panel" style="display:none;">
+                            <p style="margin-bottom:0.5rem; font-size:0.85rem; color:var(--text-muted);">이메일 주소를 붙여넣으세요 (쉼표, 줄바꿈, 공백으로 구분):</p>
+                            <textarea id="email-direct-input" rows="6" style="width:100%; font-family:'JetBrains Mono',monospace; font-size:0.82rem; line-height:1.5; resize:vertical;" placeholder="example1@gmail.com&#10;example2@naver.com&#10;example3@hanmail.net"></textarea>
+                            <button type="button" class="btn-secondary btn-small" onclick="applyDirectEmails()" style="margin-top:0.5rem;">적용</button>
+                            <span id="email-direct-count" style="margin-left:0.5rem; font-size:0.82rem; color:var(--text-muted);"></span>
                         </div>
 
                         <!-- 수신자 리스트 -->

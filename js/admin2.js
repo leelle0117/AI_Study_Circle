@@ -686,6 +686,11 @@ document.querySelectorAll('input[name="email-filter"]').forEach(radio => {
         document.getElementById('email-filter-event').style.display = 'none';
         document.getElementById('email-filter-interest').style.display = 'none';
         document.getElementById('email-filter-type').style.display = 'none';
+        document.getElementById('email-filter-direct').style.display = 'none';
+
+        // 수신자 리스트 표시/숨기기
+        const recipientsList = document.querySelector('.email-recipients-list');
+        recipientsList.style.display = emailFilterMode === 'direct' ? 'none' : '';
 
         // 선택된 필터 패널 표시
         if (emailFilterMode === 'event') {
@@ -694,6 +699,8 @@ document.querySelectorAll('input[name="email-filter"]').forEach(radio => {
             document.getElementById('email-filter-interest').style.display = 'block';
         } else if (emailFilterMode === 'type') {
             document.getElementById('email-filter-type').style.display = 'block';
+        } else if (emailFilterMode === 'direct') {
+            document.getElementById('email-filter-direct').style.display = 'block';
         }
 
         applyEmailFilter();
@@ -816,8 +823,22 @@ function updateEmailRecipientCount() {
 }
 
 function getSelectedEmails() {
+    if (emailFilterMode === 'direct') {
+        return parseDirectEmails();
+    }
     const checked = document.querySelectorAll('#email-recipients-tbody .email-member-cb:checked');
     return Array.from(checked).map(cb => cb.value).filter(v => v);
+}
+
+function parseDirectEmails() {
+    const raw = document.getElementById('email-direct-input').value;
+    return raw.split(/[\s,;]+/).map(e => e.trim().toLowerCase()).filter(e => e && e.includes('@'));
+}
+
+function applyDirectEmails() {
+    const emails = parseDirectEmails();
+    document.getElementById('email-direct-count').textContent = `${emails.length}개 이메일 주소 인식`;
+    document.getElementById('email-recipient-count').textContent = `${emails.length}명 선택`;
 }
 
 function previewEmail() {
