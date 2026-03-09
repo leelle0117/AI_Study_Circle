@@ -92,7 +92,7 @@ module.exports = async function handler(req, res) {
                     })
                 });
                 const data = await sendRes.json();
-                results.push({ email, success: sendRes.ok, data });
+                results.push({ email, success: sendRes.ok, data, statusCode: sendRes.status });
             } catch (err) {
                 results.push({ email, success: false, data: { error: err.message } });
             }

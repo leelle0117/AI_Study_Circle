@@ -949,7 +949,7 @@ async function sendBulkEmail() {
                         <strong>실패 목록:</strong>
                         <ul style="margin-top:0.3rem;">
                             ${data.details.filter(d => !d.success).map(d =>
-                                `<li>${escapeHtml(d.email)}: ${escapeHtml(d.data?.error || '알 수 없는 오류')}</li>`
+                                `<li>${escapeHtml(d.email)} [${d.statusCode || '?'}]: ${escapeHtml(d.data?.message || d.data?.error || d.data?.name || JSON.stringify(d.data))}</li>`
                             ).join('')}
                         </ul>
                     </div>
