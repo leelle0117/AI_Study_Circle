@@ -5,7 +5,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_eVHLxRoHCL23JifBiyePrA_t18geEpr';
 var _supabase = null;
 var _sbInitError = null;
 
-// URL 해시에서 type=recovery 감지 (createClient가 해시를 소비하기 전에 저장)
+// URL 해시에서 type=recovery 감지 (implicit flow 호환)
 var _pendingPasswordRecovery = window.location.hash.indexOf('type=recovery') !== -1;
 
 try {
@@ -15,10 +15,20 @@ try {
     console.error('Supabase createClient 실패:', e);
 }
 
-// PKCE 비밀번호 재설정: PASSWORD_RECOVERY 이벤트를 조기에 캡처
-// initAuth()가 renderScheduleEvents() 완료 후 실행되므로, 그 전에 이벤트가 유실될 수 있음
+// PKCE 비밀번호 재설정: code 파라미터가 있으면 세션 교환
 var _recoverySession = null;
 if (_supabase) {
+    var urlParams = new URLSearchParams(window.location.search);
+    var authCode = urlParams.get('code');
+    if (authCode) {
+        _supabase.auth.exchangeCodeForSession(authCode).then(function(result) {
+            if (result.error) {
+                console.error('Code exchange error:', result.error);
+            }
+            // exchangeCodeForSession이 성공하면 onAuthStateChange에서 PASSWORD_RECOVERY 이벤트 발생
+        });
+    }
+
     _supabase.auth.onAuthStateChange(function(event, session) {
         if (event === 'PASSWORD_RECOVERY') {
             _recoverySession = session;
