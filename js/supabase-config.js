@@ -36,11 +36,6 @@ if (_supabase) {
     });
 }
 
-// ========== Admin Emails ==========
-var ADMIN_EMAILS = [
-    'lsonic.lee@gmail.com'
-];
-
 // ========== Auth Helpers ==========
 var Auth = {
     async signUp(email, password, metadata) {

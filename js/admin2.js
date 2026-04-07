@@ -14,16 +14,16 @@ async function initAdmin() {
 
         adminUser = session.user;
 
-        // ADMIN_EMAILS 체크 (supabase-config.js에 정의)
-        if (!ADMIN_EMAILS.includes(adminUser.email.toLowerCase())) {
-            showDenied();
-            return;
-        }
-
+        // DB role 체크 (관리자 이메일을 소스에 노출하지 않음)
         try {
             adminProfile = await DB.getProfile(adminUser.id);
         } catch (e) {
             adminProfile = null;
+        }
+
+        if (!adminProfile || adminProfile.role !== 'admin') {
+            showDenied();
+            return;
         }
 
         // 관리자 확인 완료 — 콘텐츠 표시
